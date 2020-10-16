@@ -80,7 +80,7 @@ CREATE TABLE FSCJ_marketing_attribution AS (
                 customer_identifier, interaction_timestamp, interaction_type, customer_days_active, customer_type,
                 marketing_placement, marketing_description, marketing_category,
                 interaction_type || product_category AS interaction_product
-            FROM TRNG_TRNG_FSCustomerJourney.ich_banking
+            FROM TRNG_FSCustomerJourney.ich_banking
             WHERE
                 interaction_type IN ('ACCOUNT_BOOKED_OFFLINE','ACCOUNT_BOOKED_ONLINE','CLICK','REFERRAL','BROWSE')
                 AND product_category <> '-1'
