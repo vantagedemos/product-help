@@ -1,5 +1,7 @@
 ## Querying Data on External Object Storage
 
+#### Note: Use TDPRD3 to run this use case
+
 ### Introduction
 
 The following is a summary of how to access different formats of data stored in an external object store. You can copy and modify the example queries below to access your own datasets. For simplicity the included datasets are setup to not need credentials, but it is highly recommended that you use credentials to access your own datasets.
