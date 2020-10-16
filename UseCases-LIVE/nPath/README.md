@@ -46,7 +46,7 @@ The Pattern can also be tuned for better focus, for example, to control the numb
 ```sql
 SELECT * FROM npath
 ( 
-   ON Telco.telco_events
+   ON TRNG_Telco.telco_events
    PARTITION BY entity_id,session_id
    ORDER BY datestamp
    USING 
@@ -62,8 +62,7 @@ SELECT * FROM npath
          ACCUMULATE (event of any(A) ) AS path
      )
 )
-SAMPLE 1000 
-;
+SAMPLE 1000;
 ```
 
 
@@ -78,7 +77,7 @@ We're using a Pattern 'Events leading to BILL DISPUTE, with minimum of 2 and max
 SELECT *
 FROM npath
 (
-   ON (select top 100000 * from Telco.telco_events)  -- using select to control input records, use full table syntax when pattern finalized
+   ON (SELECT top 100000 * FROM TRNG_Telco.telco_events)  -- using select to control input records, use full table syntax when pattern finalized
    PARTITION BY entity_id,session_id
    ORDER BY datestamp  
    USING
@@ -104,8 +103,7 @@ FROM npath
      Mode (NONOVERLAPPING)
 )
 order by customer_id
-SAMPLE 1000
-;
+SAMPLE 1000;
 ```
 
 #### Example #3: Reverse the path direction
@@ -117,7 +115,7 @@ By simply changing the Pattern to A.O{1,3} we can now find paths taken after the
 SELECT *
 FROM npath
 (
-   ON (select top 100000 * from Telco.telco_events)  -- using select to control input records, use full table syntax when pattern finalized
+   ON (SELECT top 100000 * FROM TRNG_Telco.telco_events)  -- using select to control input records, use full table syntax when pattern finalized
    PARTITION BY entity_id,session_id
    ORDER BY datestamp  
    USING
@@ -142,8 +140,7 @@ FROM npath
      Mode (NONOVERLAPPING)
 )
 order by customer_id
-SAMPLE 1000
-;
+SAMPLE 1000;
 ```
 
 
@@ -158,7 +155,7 @@ Also, notice the nPath PATTERN syntax. Here we're filtering by paths that have a
 SELECT path, count(*) as cnt
 FROM npath
 (
-   ON Telco.Telco_events
+   ON TRNG_Telco.Telco_events
    PARTITION BY entity_id,session_id
    ORDER BY datestamp  
    USING
@@ -182,8 +179,7 @@ FROM npath
 )
 group by 1
 order by count(*) desc
-SAMPLE 50
-;
+SAMPLE 50;
 ```
 
 #### Example #5: 'Sessionize'
@@ -197,7 +193,7 @@ The function is useful both for sessionization and for detecting web crawler (bo
 select *
 from Sessionize
 (
-    on (select * from Telco.telco_events where event = 'BILL DISPUTE' and entity_id = '353329')
+    on (SELECT * FROM TRNG_Telco.telco_events where event = 'BILL DISPUTE' and entity_id = '353329')
     partition by entity_id
     order by datestamp
     using
@@ -205,8 +201,7 @@ from Sessionize
     TimeOut(1200) -- 1200 seconds (20 minutes)
 )
 order by datestamp
-SAMPLE 100
-;
+SAMPLE 100;
 ```
 
 
@@ -225,3 +220,4 @@ Or try <a href="/path/">Path</a> yourself today!
 - `datestamp`: time and date of the event
 - `session_id`: session identifier
 - `event`: event or customer interaction
+
