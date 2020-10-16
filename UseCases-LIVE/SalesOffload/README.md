@@ -23,15 +23,15 @@ Here is our current sales data. Lets grab some sample rows, we can see in this e
 
 ```sql
 SELECT TOP 10 * 
-FROM SalesOffload.sales_fact
+FROM TRNG_SalesOffload.sales_fact;
 ```
 
 
 ```sql
 SELECT sales_date, sum(sales_quantity) as total 
-FROM SalesOffload.sales_fact
+FROM TRNG_SalesOffload.sales_fact
 GROUP BY sales_date
-ORDER BY sales_date ASC
+ORDER BY sales_date ASC;
 ```
 
 
@@ -40,7 +40,7 @@ ORDER BY sales_date ASC
 
 
 ```sql
-SELECT MIN(sales_date) AS min_date, MAX(sales_date) AS max_date FROM SalesOffload.sales_fact
+SELECT MIN(sales_date) AS min_date, MAX(sales_date) AS max_date FROM TRNG_SalesOffload.sales_fact;
 ```
 
 How many records do we have in the data warehouse (2019 data)?
@@ -48,7 +48,7 @@ How many records do we have in the data warehouse (2019 data)?
 
 ```sql
 SELECT COUNT(*)
-FROM SalesOffload.sales_fact
+FROM TRNG_SalesOffload.sales_fact;
 ```
 
 
@@ -67,7 +67,7 @@ USING
  LOCATION  ('/s3/s3.amazonaws.com/trial-datasets/SalesOffload')
  RETURNTYPE ('NOSREAD_KEYS')
 ) as d 
-ORDER BY 1
+ORDER BY 1;
 ```
 
 
@@ -82,7 +82,7 @@ USING
  LOCATION  ('/s3/s3.amazonaws.com/trial-datasets/SalesOffload')
  RETURNTYPE ('NOSREAD_KEYS')
 ) as d 
-ORDER BY 1
+ORDER BY 1;
 ```
 
 
@@ -96,7 +96,7 @@ SELECT * FROM READ_NOS (
       RETURNTYPE ('NOSREAD_PARQUET_SCHEMA')
       FULLSCAN ('TRUE')
       )
-AS d
+AS d;
 ```
 
 
@@ -127,7 +127,7 @@ LOCATION  ('/s3/s3.amazonaws.com/trial-datasets/SalesOffload')
 STOREDAS  ('PARQUET')
        )
 NO PRIMARY INDEX
-PARTITION BY COLUMN
+PARTITION BY COLUMN;
 ```
 
 Lets take a look at some of the rows that are in the offloaded files. 
@@ -135,7 +135,7 @@ Lets take a look at some of the rows that are in the offloaded files.
 
 ```sql
 SELECT TOP 10 *
-FROM sales_fact_offload
+FROM sales_fact_offload;
 ```
 
 How much data do we have out there?
@@ -143,7 +143,7 @@ How much data do we have out there?
 
 ```sql
 SELECT COUNT(*)
-FROM sales_fact_offload
+FROM sales_fact_offload;
 ```
 
 
@@ -160,7 +160,7 @@ SELECT
     product_id,
     sales_quantity,
     discount_amount
-FROM sales_fact_offload)
+FROM sales_fact_offload);
 ```
 
 
@@ -169,7 +169,7 @@ Now we can query the data like any other table in Teradata Vantage, but the data
 
 ```sql
 SELECT TOP 10 *
-FROM sales_fact_offload_v
+FROM sales_fact_offload_v;
 ```
 
 That looks nice! Now our users can access all the historical data we have in the object store!
@@ -184,7 +184,7 @@ We have a lot of data in S3! Let's optimize the foreign table so that we minimiz
 
 
 ```sql
-DROP TABLE sales_fact_offload
+DROP TABLE sales_fact_offload;
 ```
 
 ```sql
@@ -208,7 +208,7 @@ PATHPATTERN ('$dir1/$year/$month')
 STOREDAS  ('PARQUET')
        )
 NO PRIMARY INDEX
-PARTITION BY COLUMN
+PARTITION BY COLUMN;
 ```
 
 We have re-defined our foreign table to include a <b>PATHPATTERN</b> clause. When looking at historical data by date, this allows us to read only the files we need!
@@ -228,7 +228,7 @@ SELECT
     product_id,
     sales_quantity,
     discount_amount
-FROM sales_fact_offload)
+FROM sales_fact_offload);
 ```
 
 
@@ -236,7 +236,7 @@ FROM sales_fact_offload)
 SELECT TOP 10 *
 FROM sales_fact_offload_v
 WHERE sales_year = '2010'
-AND sales_month = '9'
+AND sales_month = '9';
 ```
 
 This is great for use cases where we know the date at least to the month. Suppose we need to see what a customer bought many years ago. Or maybe we want to report on historical store sales. The business analyst can easily query this with no IT intervention, no going to backups or other hard to reach data silos!
@@ -250,7 +250,7 @@ FROM sales_fact_offload_v
 WHERE store_id = 6
 AND sales_year = '2012'
 AND sales_month = '8'
-GROUP BY 1
+GROUP BY 1;
 ```
 
 
@@ -266,7 +266,7 @@ SELECT sales_date,
     product_id,
     sales_quantity,
     discount_amount
-    FROM SalesOffload.sales_fact
+    FROM TRNG_SalesOffload.sales_fact
     UNION ALL
 SELECT 
     sales_date,
@@ -276,7 +276,7 @@ SELECT
     product_id,
     sales_quantity,
     discount_amount
-FROM sales_fact_offload_v)
+FROM sales_fact_offload_v);
 ```
 
 
@@ -287,7 +287,7 @@ Final thing we will do is re-run our sales over time report, code is unchanged f
 SELECT sales_date, sum(sales_quantity) as total 
 FROM sales_fact_all
 GROUP BY sales_date
-ORDER BY sales_date ASC
+ORDER BY sales_date ASC;
 ```
 
 
@@ -303,17 +303,17 @@ Drop the objects we created in our own database schema.
 
 
 ```sql
-DROP VIEW sales_fact_all
+DROP VIEW sales_fact_all;
 ```
 
 
 ```sql
-DROP VIEW sales_fact_offload_v
+DROP VIEW sales_fact_offload_v;
 ```
 
 
 ```sql
-DROP TABLE sales_fact_offload
+DROP TABLE sales_fact_offload;
 ```
 
 ## Dataset
@@ -328,4 +328,5 @@ The <b>sales_fact</b> dataset has approximately 43 million rows of sample sales 
 - `product_id`: identifier of the product
 - `sales_quantity`: quantity of the product sold
 - `discount_amount`: how much of a discount was given on this line item
+
 
