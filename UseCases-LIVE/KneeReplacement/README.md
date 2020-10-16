@@ -22,7 +22,7 @@ I am going to be demonstrating the Vantage Path analysis capabilities using heal
 Using the panel on the right I will set the values as follows:
 - Leave the Top Paths to Show as 25
 - Select the data source: 
-    - Event Database: KneeReplacement
+    - Event Database: TRNG_KneeReplacement
     - Event Table: knee_replacement_events
 
 
@@ -73,7 +73,7 @@ To demo the Create Segment capability, an output table must already be created i
 CREATE TABLE knee_replacement_path_export(
     entity_id    varchar(100),
     path        varchar(2000)
-)
+);
 ```
 
 If you have previously run the demo and not re-created the table – ensure the table is empty, otherwise Save Segment will show 0 rows being inserted.
@@ -101,7 +101,7 @@ When you are finished with this example, remember to clean up the created table:
 
 
 ```sql
-DROP TABLE knee_replacement_path_export
+DROP TABLE knee_replacement_path_export;
 ```
 
 #### Conclusion
@@ -129,4 +129,5 @@ The <b>KneeReplacement.knee_replacement</b> dataset has 289,839 rows, each repre
 - `lastname`: patient's last name
 - `email`: patient's email address
 - `state`: state abbreviation for the patient
+
 
