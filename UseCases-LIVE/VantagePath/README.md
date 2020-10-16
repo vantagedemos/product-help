@@ -27,7 +27,7 @@ The entire use case takes about 5 minutes to run.
 
 1. Open the <a href="/path-analyzer">Vantage Path</a>.
 2. Select the system connection and authenticate.
-3. Select the following "Event database": Telco.
+3. Select the following "Event database": TRNG_Telco.
 4. Select the following "Event table": telco_events.
 5. Select additional parameters or just click "RUN" and analyze the results.
 
@@ -79,9 +79,10 @@ Workflow can be used in order to run the results of the path analysis on a sched
 When you are finished with this example, remember to clean up the created tables:
 
 ```sql
-DROP TABLE path_save_segment
+DROP TABLE path_save_segment;
 ```
 
 ```sql
-DROP TABLE path_segment_queries
+DROP TABLE path_segment_queries;
 ```
+
