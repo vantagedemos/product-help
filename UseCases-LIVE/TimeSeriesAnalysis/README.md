@@ -23,14 +23,14 @@ Start by counting the number of rows in the table.
 
 
 ```sql
-select count(*) from FinancialProtection.consumer_complaints;
+SELECT count(*) FROM TRNG_FinancialProtection.consumer_complaints;
 ```
 
 There are just under 1.3 million rows. Not a problem to analyze large datasets using Vantage, lets take a look at a sample of the data.
 
 
 ```sql
-select TOP 100 * from FinancialProtection.consumer_complaints;
+SELECT TOP 100 * FROM TRNG_FinancialProtection.consumer_complaints;
 ```
 
 #### Step 2: Visualizing the Data
@@ -41,11 +41,11 @@ The first column is <b>date_received</b>. This is the date the complaints were r
 
 
 ```sql
-select date_received, count(complaint_id) as counts
-from FinancialProtection.consumer_complaints
-where date_received BETWEEN DATE '2017-03-01'
+SELECT date_received, count(complaint_id) as counts
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE date_received BETWEEN DATE '2017-03-01'
 AND DATE '2019-03-01'
-group by date_received;
+GROUP BY date_received;
 ```
 
 
@@ -61,10 +61,10 @@ Let's group the data by month and replot the graph above.
 
 
 ```sql
-select extract(year from date_received) || extract(month from date_received) as month_date, count(complaint_id) as counts
-from FinancialProtection.consumer_complaints
-group by month_date
-order by month_date;
+SELECT extract(year from date_received) || extract(month from date_received) as month_date, count(complaint_id) as counts
+FROM TRNG_FinancialProtection.consumer_complaints
+GROUP BY month_date
+ORDER BY month_date;
 ```
 
 ![png](output_13_0.png)
@@ -78,11 +78,11 @@ Let's narrow down the two spikes above and see exactly where they are happening.
 
 
 ```sql
-select date_received, count(complaint_id) as counts
-from FinancialProtection.consumer_complaints
-where year(date_received) = 2017
-group by date_received
-order by date_received;
+SELECT date_received, count(complaint_id) as counts
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE year(date_received) = 2017
+GROUP BY date_received
+ORDER BY date_received;
 ```
 
 
@@ -94,32 +94,32 @@ As we look at the peaks, we find that they occurred from January 15th to 21st an
 
 
 ```sql
-select date_received,
+SELECT date_received,
     month(date_received) as month_date,
     count(complaint_id) as counts
-from FinancialProtection.consumer_complaints
-where year(date_received) = 2017 and month_date in (1, 9)
-group by date_received
-having counts >= 1500
-order by month_date, counts desc;
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE year(date_received) = 2017 and month_date in (1, 9)
+GROUP BY date_received
+HAVING counts >= 1500
+ORDER BY month_date, counts DESC;
 ```
 
 Let's look at some of the issues that were reported during these dates.
 
 
 ```sql
-select date_received, company, count(company) as counts
-from FinancialProtection.consumer_complaints
-where date_received in (
+SELECT date_received, company, count(company) as counts
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE date_received in (
     date '2017-01-19',
     date '2017-01-20',
     date '2017-09-08',
     date '2017-09-09',
     date '2017-09-13'
 )
-group by date_received, company
-having counts > 500
-order by date_received, counts desc;
+GROUP BY date_received, company
+HAVING counts > 500
+ORDER BY date_received, counts desc;
 ```
 
 Interestingly, we can see that the great majority of the the complaints were directed at two companies: Navient Solutions and EQUIFAX. These seem to be highly correlated with the Navient Lawsuit and the Equifax breach events that happened around those dates, respectively. Let's recap what happened:
@@ -134,35 +134,35 @@ Let's now look at the top issues for Navient Solutions and Equifax during those 
 
 
 ```sql
--- analyze top issues reported agains Navient Soultions on 2017-01-19 and 2017-01-20
-select company, product, issue, count(issue) as counts
-from FinancialProtection.consumer_complaints
-where date_received in (
+-- Analyze top issues reported agains Navient Soultions on 2017-01-19 and 2017-01-20
+SELECT company, product, issue, count(issue) as counts
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE date_received in (
     date '2017-01-19',
     date '2017-01-20') and
-    company like 'Navient Solutions%'
-group by company, product, issue
-order by counts desc;
+    company LIKE 'Navient Solutions%'
+GROUP BY company, product, issue
+ORDER BY counts DESC;
 ```
 
 We can see the top two issues represent the majority of complaint counts against Navient Solutions. Furthermore, by looking at the product and issue columns we can infer that they are indeed related to the lawsuit regarding student loans. Now let's do the same analysis for the Equifax issues.
 
 
 ```sql
--- analyze top issues reported agains Navient Soultions on 2017-01-19 and 2017-01-20
-select
+-- Analyze top issues reported agains Navient Soultions on 2017-01-19 and 2017-01-20
+SELECT
     company,
     product,
     issue,
     count(issue) as counts
-from FinancialProtection.consumer_complaints
-where date_received in (
+FROM TRNG_FinancialProtection.consumer_complaints
+WHERE date_received in (
     date '2017-09-08',
     date '2017-09-09',
     date '2017-09-13') and
         company like 'EQUIFAX%'
-group by company, product, issue
-order by counts desc;
+GROUP BY company, product, issue
+ORDER BY counts desc;
 ```
 
 Here we can also confirm our hypothesis. The top issues talk about improper use of the credit report, fraud alerts, identity theft etc. This really does seem related to the Equifax breach that happened around the same time frame.
@@ -172,7 +172,7 @@ Here we can also confirm our hypothesis. The top issues talk about improper use 
 
 The Consumer Complaints Database has complaints data that was received by the Consumer Financial Protection Bureau (CFPB) on financial products and services, which include but are not limited to bank accounts, credit cards, credit reporting, debt collection, money transfers, mortgages, student loans and other types of consumer credit. The dataset is refreshed daily and contains information on the provider, the complaint, date, ZIP code and more. More information about the dataset can be found in the Consumer section of the <a href="data.gov">Data.gov</a> website.
 
-The <b>FinancialProtection.consumer_complaints</b> dataset has 1,273,782 rows, each representing a unique consumer complaint, and 18 columns, representing the following features:
+The <b>TRNG_FinancialProtection.consumer_complaints</b> dataset has 1,273,782 rows, each representing a unique consumer complaint, and 18 columns, representing the following features:
 
 - `date_received`: date that CFPB received the complaint
 - `product`: type of product the consumer identified in the complaint
@@ -203,3 +203,4 @@ You can continue to explore Vantage to extract more insights and find answers to
 - How are customers submitting their complaints? The column <b>submitted_via</b> can also be grouped to answer for this question.
 - What proportion of the customer complaints are disputed? By aggregating counts of <b>customer_disputed</b> we can answer this question.
 - Is there seasonality in the data? What is the reason for the seasonality? If we subtract the trend from the series we can analyze the seasonality in the dataset. Are most of the complaints filed during the week or on the weekends?
+
